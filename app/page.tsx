@@ -3,8 +3,8 @@
 import {
   SignInButton,
   UserButton,
-} from "@clerk/nextjs";
-import { useAuth } from "@clerk/nextjs";
+  useAuth
+} from "@clerk/clerk-react";
 import TokenGenerator from "./components/TokenGenerator";
 
 export default function Home() {

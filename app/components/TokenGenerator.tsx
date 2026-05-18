@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth, useUser } from "@clerk/nextjs";
+import { useAuth, useUser } from "@clerk/clerk-react";
 import { useState, useCallback } from "react";
 
 function CopyIcon() {
