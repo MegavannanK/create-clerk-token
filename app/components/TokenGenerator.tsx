@@ -3,6 +3,9 @@
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { useState, useCallback } from "react";
 
+const TOKEN_TEMPLATE =
+  process.env.NEXT_PUBLIC_CLERK_JWT_TEMPLATE_NAME ?? "ten-minute-token";
+
 function CopyIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -113,7 +116,10 @@ export default function TokenGenerator() {
     setLoading(true);
     setError(null);
     try {
-      const t = await getToken();
+      const t = await getToken({
+        template: TOKEN_TEMPLATE,
+        skipCache: true,
+      });
       if (t) {
         setToken(t);
         setShowDecoded(false);
@@ -243,7 +249,7 @@ export default function TokenGenerator() {
           color: "var(--color-text-dim)",
           fontSize: "0.8rem"
         }}>
-          Click &quot;Generate Token&quot; to create a JWT
+          Click &quot;Generate Token&quot; to create a 10-minute JWT
         </div>
       )}
 
@@ -275,7 +281,17 @@ export default function TokenGenerator() {
           }}>
             Authorization: Bearer &lt;token&gt;
           </code>{" "}
-          in your API requests. Tokens expire after ~60 seconds.
+          in your API requests. Tokens use the Clerk JWT template{" "}
+          <code style={{
+            background: "var(--color-surface)",
+            padding: "0.125rem 0.375rem",
+            borderRadius: "4px",
+            fontSize: "0.65rem",
+            border: "1px solid var(--color-border)"
+          }}>
+            {TOKEN_TEMPLATE}
+          </code>{" "}
+          and should expire after 10 minutes.
         </p>
       )}
     </div>
