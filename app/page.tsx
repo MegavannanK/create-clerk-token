@@ -8,6 +8,8 @@ import {
 } from "@clerk/clerk-react";
 import TokenGenerator from "./components/TokenGenerator";
 
+const APP_PATH = "/create-clerk-token/";
+
 export default function Home() {
   const { userId, isLoaded } = useAuth();
 
@@ -98,7 +100,13 @@ export default function Home() {
               for backend API testing.
             </p>
 
-            <SignUpButton mode="modal">
+            <SignUpButton
+              mode="modal"
+              fallbackRedirectUrl={APP_PATH}
+              forceRedirectUrl={APP_PATH}
+              signInFallbackRedirectUrl={APP_PATH}
+              signInForceRedirectUrl={APP_PATH}
+            >
               <button id="sign-up-btn" className="btn-primary" style={{ width: "100%", justifyContent: "center", padding: "0.75rem", marginBottom: "0.75rem" }}>
                 <svg
                   width="16"
@@ -119,7 +127,11 @@ export default function Home() {
               </button>
             </SignUpButton>
 
-            <SignInButton mode="modal">
+            <SignInButton
+              mode="modal"
+              fallbackRedirectUrl={APP_PATH}
+              forceRedirectUrl={APP_PATH}
+            >
               <button id="sign-in-btn" className="btn-secondary" style={{ width: "100%", justifyContent: "center", padding: "0.75rem" }}>
                 <svg
                   width="16"
