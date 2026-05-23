@@ -3,8 +3,7 @@
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { useState, useCallback } from "react";
 
-const TOKEN_TEMPLATE =
-  process.env.NEXT_PUBLIC_CLERK_JWT_TEMPLATE_NAME ?? "ten-minute-token";
+const TOKEN_TEMPLATE = process.env.NEXT_PUBLIC_CLERK_JWT_TEMPLATE_NAME;
 
 function CopyIcon() {
   return (
@@ -111,17 +110,23 @@ export default function TokenGenerator() {
   const [copied, setCopied] = useState(false);
   const [showDecoded, setShowDecoded] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [usedTemplate, setUsedTemplate] = useState<string | null>(null);
 
   const generateToken = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const t = await getToken({
-        template: TOKEN_TEMPLATE,
-        skipCache: true,
-      });
+      const t = await getToken(
+        TOKEN_TEMPLATE
+          ? {
+              template: TOKEN_TEMPLATE,
+              skipCache: true,
+            }
+          : undefined
+      );
       if (t) {
         setToken(t);
+        setUsedTemplate(TOKEN_TEMPLATE ?? null);
         setShowDecoded(false);
       } else {
         setError("Failed to generate token. Please try signing in again.");
@@ -249,7 +254,7 @@ export default function TokenGenerator() {
           color: "var(--color-text-dim)",
           fontSize: "0.8rem"
         }}>
-          Click &quot;Generate Token&quot; to create a 10-minute JWT
+          Click &quot;Generate Token&quot; to create a JWT
         </div>
       )}
 
@@ -281,17 +286,25 @@ export default function TokenGenerator() {
           }}>
             Authorization: Bearer &lt;token&gt;
           </code>{" "}
-          in your API requests. Tokens use the Clerk JWT template{" "}
-          <code style={{
-            background: "var(--color-surface)",
-            padding: "0.125rem 0.375rem",
-            borderRadius: "4px",
-            fontSize: "0.65rem",
-            border: "1px solid var(--color-border)"
-          }}>
-            {TOKEN_TEMPLATE}
-          </code>{" "}
-          and should expire after 10 minutes.
+          in your API requests.
+          {usedTemplate ? (
+            <>
+              {" "}
+              Tokens use the Clerk JWT template{" "}
+              <code style={{
+                background: "var(--color-surface)",
+                padding: "0.125rem 0.375rem",
+                borderRadius: "4px",
+                fontSize: "0.65rem",
+                border: "1px solid var(--color-border)"
+              }}>
+                {usedTemplate}
+              </code>
+              .
+            </>
+          ) : (
+            " This is the default Clerk session token."
+          )}
         </p>
       )}
     </div>
